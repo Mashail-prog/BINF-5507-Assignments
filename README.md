@@ -1,0 +1,1 @@
+This project aims to clean and preprocess messy data using a Python script and then evaluate the impact on model performance.
