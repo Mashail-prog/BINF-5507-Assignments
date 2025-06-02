@@ -15,6 +15,12 @@ def impute_missing_values(data, strategy='mean'):
     :return: pandas DataFrame
     """
     # TODO: Fill missing values based on the specified strategy
+    
+    for col in data.select_dtypes(include=[np.number]).columns:
+        data[col] = data[col].fillna(data[col].mean())
+    
+    return data
+
     pass
 
 # 2. Remove Duplicates
@@ -25,6 +31,14 @@ def remove_duplicates(data):
     :return: pandas DataFrame
     """
     # TODO: Remove duplicate rows
+    duplicates = data.duplicated().sum()
+    if duplicates > 0:  # Check for duplicates 
+        return data.drop_duplicates()
+    else:
+        print("The data has no duplicates.")
+        return data
+
+    
     pass
 
 # 3. Normalize Numerical Data
@@ -34,17 +48,57 @@ def normalize_data(data,method='minmax'):
     :param method: str, normalization method ('minmax' (default) or 'standard')
     """
     # TODO: Normalize numerical data using Min-Max or Standard scaling
-    pass
+    
+    numeric_cols = data.select_dtypes(include=[np.number]).columns  # Select numerical columns
+    scaler = MinMaxScaler()  # Initialize Min-Max Scaler
 
-# 4. Remove Redundant Features   
+    # Apply scaling
+    data[numeric_cols] = scaler.fit_transform(data[numeric_cols])
+
+    return data
+pass
+
+# 4. Remove Redundant Features 
+# First I have to convert all categorical variables into numerical
+def dummy_categorical_variables(data):
+    """
+    Convert categorical variables into dummy variables.
+    :param data: pandas DataFrame
+    :return: pandas DataFrame with categorical features converted
+    """
+    categorical_cols = data.select_dtypes(include=['object']).columns.tolist()
+    if categorical_cols:
+        data = pd.get_dummies(data, columns=categorical_cols, drop_first=True)
+    return data
+
 def remove_redundant_features(data, threshold=0.9):
-    """Remove redundant or duplicate columns.
+    """
+    Remove redundant features based on correlation threshold.
     :param data: pandas DataFrame
     :param threshold: float, correlation threshold
-    :return: pandas DataFrame
+    :return: pandas DataFrame with redundant features removed
     """
     # TODO: Remove redundant features based on the correlation threshold (HINT: you can use the corr() method)
-    pass
+    
+    # Convert categorical features to numeric
+    data = dummy_categorical_variables(data)
+
+    # correlation matrix
+    correlations = data.select_dtypes(include='number').corr(method='spearman')
+
+    # Identify redundant features
+    redundant_features = set()
+    for i in range(len(correlations.columns)):
+        for j in range(i):
+            if abs(correlations.iloc[i, j]) > threshold:
+                col_name = correlations.columns[i]
+                redundant_features.add(col_name)
+
+    # Drop redundant features
+    data = data.drop(columns=redundant_features)
+
+    return data
+
 
 # ---------------------------------------------------
 
