@@ -1,1 +1,1 @@
-This project aims to clean and preprocess messy data using a Python script and then evaluate the impact on model performance.
+This is a public repoitory showing scripts and data for the BINF-5507-Machine Learning course at Humber polytechnic.
