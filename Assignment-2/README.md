@@ -1,4 +1,5 @@
-Heart Disease Analysis: Regression and Classification Models
+Heart Disease Analysis: 
+Regression and Classification Models
 Overview
 
 This project explores the application of machine learning techniques to both predict cholesterol levels (regression) and detect heart disease (classification) using the Heart Disease UCI dataset. The goal is to evaluate multiple models, interpret hyperparameter effects, and reflect on model performance and insights for both tasks.
